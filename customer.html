@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Catering - Customer Portal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1498654896293-37aacf113fd9?auto=format&fit=crop&w=1400&q=80') no-repeat center center fixed;
+            background-size: cover;
+            color: #222;
+        }
+        .page-wrap {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .page-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            color: white;
+        }
+        .logo {
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 2px solid rgba(255,255,255,0.8);
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.4rem;
+            text-shadow: 1px 1px 6px rgba(0,0,0,0.6);
+        }
+        .panel {
+            background: rgba(255,255,255,0.95);
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            padding: 22px;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: 700;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 18px;
+            margin: 8px 8px 0 0;
+            background: #2f8f55;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.18s ease, background 0.18s ease;
+        }
+        button:hover {
+            transform: translateY(-1px);
+            background: #257645;
+        }
+        .actions button {
+            min-width: 140px;
+        }
+        .menu-item {
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .repeated {
+            background: #fff4d6;
+            border-left: 4px solid #f1b600;
+            padding: 6px 10px;
+        }
+        .meal-section {
+            margin-top: 15px;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #2f8f55;
+        }
+        .meal-section h4 {
+            margin: 0 0 12px 0;
+            color: #2f8f55;
+        }
+        .summary-card {
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 14px;
+            margin-top: 12px;
+            background: #fafafa;
+        }
+        .success-msg {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: none;
+        }
+        .card-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .card-row > * {
+            flex: 1;
+            min-width: 220px;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrap">
+        <div class="page-header">
+            <img class="logo" src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=120&q=80" alt="Catering Logo">
+            <div>
+                <h1>Order Catering</h1>
+                <p>Select your catering package and menu items</p>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Customer Order Form</h2>
+            <div class="card-row">
+                <div>
+                    <label for="customerName">Your Name</label>
+                    <input type="text" id="customerName" placeholder="Enter your full name" required>
+                </div>
+                <div>
+                    <label for="customerPhone">Mobile Number</label>
+                    <input type="tel" id="customerPhone" placeholder="+919XXXXXXXXX" required>
+                </div>
+            </div>
+            <div class="card-row">
+                <div>
+                    <label for="eventDate">Event Date</label>
+                    <input type="date" id="eventDate" required>
+                </div>
+                <div>
+                    <label for="packageSelect">Choose Package</label>
+                    <select id="packageSelect">
+                        <option value="silver">Silver Package - ₹999</option>
+                        <option value="gold">Gold Package - ₹1499</option>
+                        <option value="diamond">Diamond Package - ₹2499</option>
+                        <option value="platinum">Platinum Package - ₹3999</option>
+                    </select>
+                </div>
+            </div>
+            <div id="menuDetails"></div>
+            <div id="selectionSummary" class="summary-card" style="display:none;"></div>
+            <div class="actions">
+                <button type="button" onclick="submitOrder()">Place Order</button>
+                <button type="button" onclick="resetForm()">Clear</button>
+            </div>
+            <div class="success-msg" id="successMsg">✓ Order placed successfully! Your order ID is <strong id="orderId"></strong></div>
+        </div>
+    </div>
+
+    <script>
+        const defaultPackages = {
+            silver: {
+                title: 'Silver Package',
+                price: '₹999',
+                breakfast: ['Pancakes', 'Fruit Salad', 'Coffee'],
+                lunch: ['Grilled Chicken', 'Vegetable Stir Fry', 'Cookies'],
+                dinner: ['Chicken Wings', 'Vegetable Spring Rolls', 'Fruit Salad']
+            },
+            gold: {
+                title: 'Gold Package',
+                price: '₹1499',
+                breakfast: ['Omelette', 'Cheese Platter', 'Juice'],
+                lunch: ['Beef Steak', 'Pasta Primavera', 'Tiramisu'],
+                dinner: ['Shrimp Cocktail', 'Salmon Fillet', 'Chocolate Cake']
+            },
+            diamond: {
+                title: 'Diamond Package',
+                price: '₹2499',
+                breakfast: ['Caviar', 'Truffle Bruschetta', 'Champagne'],
+                lunch: ['Lobster Thermidor', 'Truffle Risotto', 'Soufflé'],
+                dinner: ['Foie Gras', 'Wagyu Beef', 'Macarons']
+            },
+            platinum: {
+                title: 'Platinum Package',
+                price: '₹3999',
+                breakfast: ['Beluga Caviar', 'Gold Leaf Canapés', 'Exotic Juice'],
+                lunch: ['Kobe Beef Tenderloin', 'Black Truffle Pasta', 'Champagne Sorbet'],
+                dinner: ['Seared Scallops', 'Foie Gras Wellington', 'Handmade Truffles']
+            }
+        };
+
+        function loadPackageData() {
+            const stored = localStorage.getItem('cateringPackageData');
+            try {
+                return stored ? JSON.parse(stored) : JSON.parse(JSON.stringify(defaultPackages));
+            } catch {
+                return JSON.parse(JSON.stringify(defaultPackages));
+            }
+        }
+
+        const packageSelect = document.getElementById('packageSelect');
+        packageSelect.addEventListener('change', renderMenuDetails);
+
+        function renderMenuDetails() {
+            const selectedKey = packageSelect.value;
+            const packageData = loadPackageData();
+            const pack = packageData[selectedKey];
+            let html = `<h3>${pack.title} (${pack.price})</h3>`;
+            html += `<p>Select items for each meal:</p>`;
+            html += renderMealBlock('breakfast', 'Breakfast', pack.breakfast);
+            html += renderMealBlock('lunch', 'Lunch', pack.lunch);
+            html += renderMealBlock('dinner', 'Dinner', pack.dinner);
+            document.getElementById('menuDetails').innerHTML = html;
+        }
+
+        function renderMealBlock(mealKey, mealTitle, items) {
+            return `<div class="meal-section">
+                <h4>📌 ${mealTitle}</h4>
+                ${items.map(item => `
+                    <div class="menu-item">
+                        <label><input type="checkbox" value="${item}" name="${mealKey}" class="meal-${mealKey}" onchange="updateSummary()"> ${item}</label>
+                    </div>
+                `).join('')}
+            </div>`;
+        }
+
+        function updateSummary() {
+            const selectedKey = packageSelect.value;
+            const packageData = loadPackageData();
+            const pack = packageData[selectedKey];
+            const selectedItems = Array.from(document.querySelectorAll('#menuDetails input[type="checkbox"]:checked')).map(cb => cb.value);
+            
+            if (selectedItems.length === 0) {
+                document.getElementById('selectionSummary').style.display = 'none';
+                return;
+            }
+            
+            const repeatedItems = findRepeatedItemsInSelection(selectedItems, pack);
+            const formattedItems = selectedItems.map(item => {
+                const isRepeated = repeatedItems.includes(item.toLowerCase());
+                return isRepeated ? `<span class="repeated">${item}</span>` : item;
+            }).join(', ');
+            
+            let html = `<h3>✓ Your Selection</h3>`;
+            html += `<p><strong>Package:</strong> ${pack.title} (${pack.price})</p>`;
+            html += `<p><strong>Selected Items:</strong></p>`;
+            html += `<p>${formattedItems}</p>`;
+            
+            document.getElementById('selectionSummary').innerHTML = html;
+            document.getElementById('selectionSummary').style.display = 'block';
+        }
+
+        function findRepeatedItemsInSelection(selectedItems, pack) {
+            const itemCounts = {};
+            selectedItems.forEach(item => {
+                const baseLower = item.toLowerCase();
+                itemCounts[baseLower] = (itemCounts[baseLower] || 0) + 1;
+            });
+            return Object.keys(itemCounts).filter(key => itemCounts[key] > 1);
+        }
+
+        function submitOrder() {
+            const customerName = document.getElementById('customerName').value.trim();
+            const customerPhone = document.getElementById('customerPhone').value.trim();
+            const eventDate = document.getElementById('eventDate').value;
+            const packageKey = packageSelect.value;
+
+            if (!customerName || !customerPhone || !eventDate) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            const selectedItems = Array.from(
+                document.querySelectorAll('#menuDetails input[type="checkbox"]:checked')
+            ).map(cb => `${cb.value} (${cb.name})`);
+
+            if (!selectedItems.length) {
+                alert('Please select at least one menu item');
+                return;
+            }
+
+            const packageData = loadPackageData();
+            const pack = packageData[packageKey];
+
+            const order = {
+                userType: 'customer',
+                userId: customerName,
+                customerPhone: customerPhone,
+                eventDate: eventDate,
+                packageKey: packageKey,
+                packageTitle: pack.title,
+                packagePrice: pack.price,
+                selectedItems: selectedItems,
+                timestamp: new Date().toISOString()
+            };
+
+            const savedData = JSON.parse(localStorage.getItem('cateringSelections') || '[]');
+            savedData.push(order);
+            localStorage.setItem('cateringSelections', JSON.stringify(savedData));
+
+            const orderId = `ORD-${Date.now()}`;
+            document.getElementById('orderId').textContent = orderId;
+            document.getElementById('successMsg').style.display = 'block';
+
+            setTimeout(() => {
+                resetForm();
+            }, 3000);
+        }
+
+        function resetForm() {
+            document.getElementById('customerName').value = '';
+            document.getElementById('customerPhone').value = '';
+            document.getElementById('eventDate').value = '';
+            document.getElementById('packageSelect').value = 'silver';
+            document.getElementById('successMsg').style.display = 'none';
+            renderMenuDetails();
+        }
+
+        renderMenuDetails();
+    </script>
+</body>
+</html>

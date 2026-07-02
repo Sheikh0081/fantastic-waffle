@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ayojan Catering Packages</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1498654896293-37aacf113fd9?auto=format&fit=crop&w=1400&q=80') no-repeat center center fixed;
+            background-size: cover;
+            color: #222;
+        }
+        .page-wrap {
+                    max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .page-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            color: white;
+        }
+        .logo {
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 2px solid rgba(255,255,255,0.8);
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.4rem;
+            text-shadow: 1px 1px 6px rgba(0,0,0,0.6);
+        }
+        .panel {
+            background: rgba(255,255,255,0.95);
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            padding: 22px;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: 700;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 18px;
+            margin: 8px 8px 0 0;
+            background: #2f8f55;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.18s ease, background 0.18s ease;
+        }
+        button:hover {
+            transform: translateY(-1px);
+            background: #257645;
+        }
+        .actions button {
+            min-width: 140px;
+        }
+        #menuDetails {
+            margin-top: 20px;
+        }
+        .day-section {
+            background: #f5f5f5;
+            border: 2px solid #2f8f55;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .day-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2f8f55;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #2f8f55;
+            padding-bottom: 10px;
+        }
+        .meal-section {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .meal-header {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #2f8f55;
+        }
+        .meal-toggle {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f0f8f5;
+            border-radius: 8px;
+        }
+        .meal-toggle label {
+            display: flex;
+            align-items: center;
+            margin: 0;
+            font-weight: 600;
+            cursor: pointer;
+            gap: 6px;
+        }
+        .meal-toggle input[type="radio"] {
+            width: auto;
+            margin: 0;
+            padding: 0;
+        }
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .category-card {
+            background: #fafafa;
+            border: 1px solid #ddd;
+            border-left: 4px solid #2f8f55;
+            border-radius: 8px;
+            padding: 10px;
+        }
+        .category-name {
+            font-weight: 600;
+            color: #2f8f55;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        .category-subtitle {
+            font-size: 0.75rem;
+            color: #999;
+            margin-bottom: 8px;
+        }
+        .item-list {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .item-check {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .item-check input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+            padding: 0;
+            cursor: pointer;
+        }
+        .item-check label {
+            margin: 0;
+            font-weight: 400;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        .selection-counter {
+            font-size: 0.75rem;
+            color: #fff;
+            background: #2f8f55;
+            padding: 6px 8px;
+            border-radius: 4px;
+            margin-top: 8px;
+            text-align: center;
+            font-weight: 600;
+        }
+        .error-msg {
+            color: #c62828;
+            font-weight: 600;
+            padding: 6px;
+            background: #ffebee;
+            border-radius: 4px;
+            margin-top: 6px;
+            display: none;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+        .summary-card {
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 14px;
+            margin-top: 12px;
+            background: #fafafa;
+        }
+        .order-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .summary-stat {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px 8px;
+            text-align: left;
+            vertical-align: top;
+            white-space: normal;
+        }
+        .admin-block {
+            padding: 16px;
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        .card-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .card-row > * {
+            flex: 1;
+            min-width: 220px;
+        }
+        .print-header {
+            display: none;
+            text-align: center;
+            padding: 20px 0 30px;
+            background: white;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #2f8f55;
+        }
+        .print-header img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+        .print-header h1 {
+            margin: 0 0 8px 0;
+            font-size: 2.2rem;
+            color: #2f8f55;
+            font-weight: bold;
+        }
+        .print-header p {
+            margin: 0;
+            color: #555;
+            font-size: 1.05rem;
+            font-weight: 500;
+        }
+        #dataDisplay h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            color: #2f8f55;
+        }
+        .order-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+        .order-card p {
+            margin: 6px 0;
+        }
+        .selected-item {
+            display: block;
+            margin: 4px 0;
+            font-size: 0.9rem;
+        }
+        @media print {
+            html, body {
+                background: white;
+                margin: 0;
+                padding: 0;
+                color: #000;
+            }
+            .print-header {
+                display: block !important;
+            }
+            .page-header, .actions, button, input, select, textarea {
+                display: none !important;
+            }
+            .panel {
+                box-shadow: none;
+                background: white;
+                margin: 0;
+                padding: 0;
+                border: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="print-header" id="printHeader">
+        <img class="logo" src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=120&q=80" alt="Catering Logo">
+        <div>
+            <h1>Catering Packages</h1>
+            <p>Delicious catering plans ready for event delivery.</p>
+        </div>
+    </div>
+    <div class="page-wrap">
+        <div class="page-header">
+            <img class="logo" src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=120&q=80" alt="Catering Logo">
+            <div>
+                <h1>Ayojan Catering Packages</h1>
+                <p>Choose a package, select menu items, and generate barcode or print order.</p>
+            </div>
+        </div>
+
+        <div class="panel" id="loginPanel">
+            <h2>Login</h2>
+            <label for="userType">User Type</label>
+            <select id="userType">
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+            </select>
+            <label for="userId">User ID</label>
+            <input type="text" id="userId" placeholder="Enter your user id">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter password">
+            <div class="actions">
+                <button type="button" onclick="login()">Login</button>
+            </div>
+        </div>
+
+        <div class="panel" id="menuSection" style="display:none;">
+            <h2>User Menu Selection</h2>
+            <div class="card-row">
+                <div>
+                    <label for="eventStartDate">Event Start Date</label>
+                    <input type="date" id="eventStartDate">
+                </div>
+                <div>
+                    <label for="dayCount">Days</label>
+                    <select id="dayCount">
+                        <option value="1">1 Day</option>
+                        <option value="2">2 Days</option>
+                        <option value="3">3 Days</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="packageSelect">Package</label>
+                    <select id="packageSelect">
+                        <option value="silver">Silver Package</option>
+                        <option value="gold">Gold Package</option>
+                        <option value="diamond">Diamond Package</option>
+                        <option value="platinum">Platinum Package</option>
+                    </select>
+                </div>
+            </div>
+            <div id="menuDetails"></div>
+            <div class="actions">
+                <button type="button" onclick="saveSelection()">💾 Save Selection</button>
+                <button type="button" onclick="generateBarcode()">📊 Generate Barcode</button>
+                <button type="button" onclick="printMenu()">🖨️ Print</button>
+            </div>
+            <div id="menuSummary" class="summary-card"></div>
+        </div>
+
+        <div class="panel" id="adminSection" style="display:none;">
+            <h2>Admin Panel</h2>
+            <div style="background:#e7f3ff; padding:12px; border-radius:8px; margin-bottom:16px; border-left:4px solid #2196F3;">
+                <strong>📱 Customer Portal:</strong> <a href="customer.html" target="_blank" style="color:#2196F3; text-decoration:none; font-weight:bold;">customer.html</a>
+            </div>
+            
+            <div class="admin-block">
+                <h3>📊 Order Summary</h3>
+                <div id="orderSummary" class="order-summary-grid"></div>
+            </div>
+
+            <div class="admin-block">
+                <h3>Monthly Orders</h3>
+                <div class="card-row">
+                    <div>
+                        <label for="monthSelect">Select Month</label>
+                        <input type="month" id="monthSelect">
+                    </div>
+                    <div>
+                        <label for="orderDateSelect">Search by Date</label>
+                        <input type="date" id="orderDateSelect">
+                    </div>
+                </div>
+                <div class="actions">
+                    <button type="button" onclick="loadData()">Load Month</button>
+                    <button type="button" onclick="loadDataByDate()">Load Date</button>
+                    <button type="button" onclick="printOrders()">Print Orders</button>
+                </div>
+                <div id="dataDisplay"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <script>
+        const defaultPackages = {
+            silver: {
+                title: 'Silver Package',
+                price: '999',
+                breakfast: {
+                    sweets: ['Gulab Jamun', 'Rass Malai', 'Rabdi', 'Sahi Tukda', 'Bengali Mithai'],
+                    namkeen: ['Samosa', 'Pakora', 'Spring Roll', 'Chikhalwali', 'Mathri'],
+                    bakery: ['Bread Butter', 'Toast', 'Croissant', 'Bagel', 'Bun'],
+                    coffee: ['Black Coffee', 'Cappuccino', 'Latte', 'Americano', 'Espresso'],
+                    tea: ['Black Tea', 'Green Tea', 'Masala Tea', 'Herbal Tea', 'Oolong'],
+                    milk: ['Plain Milk', 'Flavored Milk', 'Milk Shake', 'Lassi', 'Yogurt'],
+                    accompaniments: ['Butter', 'Jam', 'Honey', 'Dry Fruits', 'Nuts Mix'],
+                    beverages: ['Orange Juice', 'Apple Juice', 'Mango Shake', 'Smoothie', 'Fresh Juice']
+                },
+                lunch: {
+                    sweets: ['Gulab Jamun', 'Kheer', 'Jalebi', 'Barfi', 'Halwa'],
+                    namkeen: ['Paneer Tikka', 'Chicken Tikka', 'Samosa', 'Pakora', 'Seekh'],
+                    bakery: ['Naan', 'Roti', 'Puri', 'Bhatura', 'Parata'],
+                    rice: ['Basmati Rice', 'Plain Rice', 'Jeera Rice', 'Biryani', 'Fried Rice'],
+                    curry: ['Butter Chicken', 'Paneer Curry', 'Dal Makhni', 'Veg Curry', 'Fish Curry'],
+                    salad: ['Green Salad', 'Cucumber Salad', 'Mixed Salad', 'Onion Salad', 'Carrot Salad'],
+                    accompaniments: ['Pickle', 'Chutney', 'Papad', 'Yogurt', 'Butter'],
+                    beverages: ['Water', 'Juice', 'Lemonade', 'Coconut Water', 'Soft Drink']
+                },
+                dinner: {
+                    sweets: ['Gulab Jamun', 'Kheer', 'Jalebi', 'Rasgulla', 'Mithai Mix'],
+                    namkeen: ['Seekh Kebab', 'Pakora', 'Samosa', 'Spinach Pakora', 'Cheese Roll'],
+                    bakery: ['Naan', 'Paratha', 'Roti', 'Bhatura', 'Puri'],
+                    rice: ['Biryani', 'Basmati Rice', 'Fried Rice', 'Lemon Rice', 'Coconut Rice'],
+                    curry: ['Tandoori Chicken', 'Paneer Tikka', 'Dal Tadka', 'Mutton Curry', 'Fish Fry'],
+                    salad: ['Coleslaw', 'Greek Salad', 'Mixed Veg', 'Beet Salad', 'Cabbage Mix'],
+                    accompaniments: ['Raita', 'Pickle', 'Chutney', 'Papad', 'Butter'],
+                    beverages: ['Water', 'Juice', 'Coffee', 'Tea', 'Wine']
+                }
+            },
+            gold: {
+                title: 'Gold Package',
+                price: '1499',
+                breakfast: {
+                    sweets: ['Premium Gulab Jamun', 'Rass Malai', 'Rabdi', 'Sahi Tukda', 'Kesar Mithai'],
+                    namkeen: ['Paneer Samosa', 'Cheese Pakora', 'Spring Roll', 'Spinach Roll', 'Paneer Mathri'],
+                    bakery: ['Butter Croissant', 'Brioche', 'Bagel', 'Muffin', 'Donut'],
+                    coffee: ['Premium Cappuccino', 'Latte', 'Mocha', 'Americano', 'Espresso'],
+                    tea: ['Premium Black Tea', 'Jasmine Tea', 'Masala Tea', 'Darjeeling', 'English Tea'],
+                    milk: ['Premium Milk', 'Almond Milk', 'Milk Shake', 'Lassi', 'Greek Yogurt'],
+                    accompaniments: ['Premium Butter', 'Imported Jam', 'Organic Honey', 'Nuts Mix', 'Dates'],
+                    beverages: ['Fresh Orange Juice', 'Apple Juice', 'Mango Lassi', 'Smoothie', 'Fresh Fruit Juice']
+                },
+                lunch: {
+                    sweets: ['Saffron Gulab Jamun', 'Premium Kheer', 'Golden Jalebi', 'Kesar Barfi', 'Mawa Halwa'],
+                    namkeen: ['Paneer Tikka', 'Tandoori Chicken', 'Samosa', 'Pakora', 'Kebab'],
+                    bakery: ['Premium Naan', 'Butter Roti', 'Puri', 'Bhatura', 'Parata'],
+                    rice: ['Basmati Rice', 'Saffron Rice', 'Jeera Rice', 'Biryani', 'Pulao'],
+                    curry: ['Butter Chicken', 'Paneer Makhni', 'Dal Makhni', 'Veg Kurma', 'Fish Curry'],
+                    salad: ['Premium Green Salad', 'Caesar Salad', 'Mixed Salad', 'Beet Salad', 'Carrot Salad'],
+                    accompaniments: ['Premium Pickle', 'Mint Chutney', 'Papad', 'Greek Yogurt', 'Premium Butter'],
+                    beverages: ['Mineral Water', 'Juice', 'Lemonade', 'Coconut Water', 'Lassi']
+                },
+                dinner: {
+                    sweets: ['Kesar Gulab Jamun', 'Premium Kheer', 'Jalebi', 'Rasgulla', 'Barfi Mix'],
+                    namkeen: ['Premium Seekh Kebab', 'Paneer Pakora', 'Samosa', 'Paneer Roll', 'Cheese Roll'],
+                    bakery: ['Premium Naan', 'Butter Paratha', 'Puri', 'Bhatura', 'Roti'],
+                    rice: ['Saffron Biryani', 'Premium Basmati Rice', 'Fried Rice', 'Lemon Rice', 'Coconut Rice'],
+                    curry: ['Tandoori Chicken', 'Paneer Tikka', 'Premium Dal', 'Mutton Curry', 'Fish Fry'],
+                    salad: ['Garden Salad', 'Greek Salad', 'Mixed Veg', 'Beet Salad', 'Cabbage Mix'],
+                    accompaniments: ['Premium Raita', 'Pickle', 'Mint Chutney', 'Papad', 'Premium Butter'],
+                    beverages: ['Mineral Water', 'Premium Juice', 'Coffee', 'Tea', 'Wine']
+                }
+            },
+            diamond: {
+                title: 'Diamond Package',
+                price: '2499',
+                breakfast: {
+                    sweets: ['Saffron Gulab Jamun', 'Kesar Rass Malai', 'Mawa Rabdi', 'Sahi Tukda', 'Peda'],
+                    namkeen: ['Paneer Samosa', 'Cheese Pakora', 'Premium Spring Roll', 'Spinach Roll', 'Paneer Mathri'],
+                    bakery: ['Almond Croissant', 'Premium Brioche', 'Bagel', 'Artisan Muffin', 'Premium Donut'],
+                    coffee: ['Espresso', 'Cappuccino Deluxe', 'Mocha', 'Latte', 'Irish Coffee'],
+                    tea: ['Darjeeling Tea', 'Assam Tea', 'Jasmine Tea', 'Oolong Tea', 'Premium Chai'],
+                    milk: ['Premium Milk', 'Almond Milk', 'Soy Milk', 'Lassi Deluxe', 'Greek Yogurt'],
+                    accompaniments: ['Imported Butter', 'Organic Jam', 'Raw Honey', 'Premium Nuts', 'Dates'],
+                    beverages: ['Fresh Orange Juice', 'Fresh Apple Juice', 'Mango Lassi', 'Smoothie Bowl', 'Exotic Juice']
+                },
+                lunch: {
+                    sweets: ['Kesar Gulab Jamun', 'Mawa Kheer', 'Golden Jalebi', 'Kesar Barfi', 'Premium Halwa'],
+                    namkeen: ['Paneer Tikka', 'Tandoori Chicken', 'Lamb Samosa', 'Cheese Pakora', 'Premium Kebab'],
+                    bakery: ['Premium Naan', 'Butter Roti', 'Puri', 'Premium Bhatura', 'Parata'],
+                    rice: ['Saffron Basmati', 'Premium Biryani', 'Jeera Rice', 'Pulao', 'Fried Rice'],
+                    curry: ['Butter Chicken', 'Paneer Makhni', 'Dal Makhni', 'Veg Kurma', 'Fish Curry'],
+                    salad: ['Premium Green Salad', 'Caesar Salad', 'Coleslaw', 'Beet Salad', 'Carrot Salad'],
+                    accompaniments: ['Premium Pickle', 'Mint Chutney', 'Premium Papad', 'Greek Yogurt', 'Butter'],
+                    beverages: ['Mineral Water', 'Fresh Juice', 'Lemonade', 'Coconut Water', 'Premium Lassi']
+                },
+                dinner: {
+                    sweets: ['Premium Gulab Jamun', 'Mawa Kheer', 'Golden Jalebi', 'Rasgulla', 'Premium Barfi'],
+                    namkeen: ['Premium Kebab', 'Paneer Pakora', 'Lamb Samosa', 'Paneer Roll', 'Premium Roll'],
+                    bakery: ['Premium Naan', 'Butter Paratha', 'Puri', 'Premium Bhatura', 'Roti'],
+                    rice: ['Premium Biryani', 'Saffron Rice', 'Fried Rice', 'Lemon Rice', 'Coconut Rice'],
+                    curry: ['Tandoori Chicken', 'Paneer Tikka', 'Premium Dal', 'Mutton Curry', 'Fish Fry'],
+                    salad: ['Garden Salad', 'Greek Salad', 'Mixed Veg', 'Beet Salad', 'Cabbage Mix'],
+                    accompaniments: ['Premium Raita', 'Pickle', 'Mint Chutney', 'Premium Papad', 'Butter'],
+                    beverages: ['Mineral Water', 'Premium Juice', 'Coffee', 'Tea', 'Wine']
+                }
+            },
+            platinum: {
+                title: 'Platinum Package',
+                price: '3999',
+                breakfast: {
+                    sweets: ['Royal Saffron Gulab Jamun', 'Kesar Rass Malai', 'Mawa Rabdi', 'Royal Sahi Tukda', 'Peda'],
+                    namkeen: ['Premium Paneer Samosa', 'Cheese Pakora', 'Luxury Spring Roll', 'Spinach Roll', 'Paneer Mathri'],
+                    bakery: ['Luxury Almond Croissant', 'Premium Brioche', 'Artisan Bagel', 'Luxury Muffin', 'Premium Donut'],
+                    coffee: ['Premium Espresso', 'Cappuccino', 'Mocha', 'Latte', 'Irish Coffee'],
+                    tea: ['Premium Darjeeling', 'Assam Tea', 'Jasmine Tea', 'Premium Oolong', 'Luxury Chai'],
+                    milk: ['Premium Milk', 'Almond Milk', 'Soy Milk', 'Luxury Lassi', 'Premium Yogurt'],
+                    accompaniments: ['Imported Butter', 'Organic Jam', 'Raw Honey', 'Luxury Nuts', 'Premium Dates'],
+                    beverages: ['Fresh Orange Juice', 'Fresh Apple Juice', 'Mango Lassi', 'Luxury Smoothie', 'Exotic Juice']
+                },
+                lunch: {
+                    sweets: ['Royal Saffron Gulab Jamun', 'Mawa Kheer', 'Golden Jalebi', 'Kesar Barfi', 'Royal Halwa'],
+                    namkeen: ['Luxury Paneer Tikka', 'Tandoori Chicken', 'Lamb Samosa', 'Cheese Pakora', 'Royal Kebab'],
+                    bakery: ['Premium Naan', 'Butter Roti', 'Puri', 'Premium Bhatura', 'Parata'],
+                    rice: ['Royal Saffron Basmati', 'Premium Biryani', 'Jeera Rice', 'Pulao', 'Fried Rice'],
+                    curry: ['Butter Chicken', 'Paneer Makhni', 'Dal Makhni', 'Veg Kurma', 'Fish Curry'],
+                    salad: ['Premium Green Salad', 'Caesar Salad', 'Coleslaw', 'Beet Salad', 'Carrot Salad'],
+                    accompaniments: ['Premium Pickle', 'Mint Chutney', 'Premium Papad', 'Premium Yogurt', 'Butter'],
+                    beverages: ['Mineral Water', 'Fresh Juice', 'Lemonade', 'Coconut Water', 'Premium Lassi']
+                },
+                dinner: {
+                    sweets: ['Royal Gulab Jamun', 'Mawa Kheer', 'Golden Jalebi', 'Rasgulla', 'Premium Barfi'],
+                    namkeen: ['Premium Kebab', 'Paneer Pakora', 'Lamb Samosa', 'Paneer Roll', 'Premium Roll'],
+                    bakery: ['Premium Naan', 'Butter Paratha', 'Puri', 'Premium Bhatura', 'Roti'],
+                    rice: ['Royal Biryani', 'Saffron Rice', 'Fried Rice', 'Lemon Rice', 'Coconut Rice'],
+                    curry: ['Tandoori Chicken', 'Paneer Tikka', 'Premium Dal', 'Mutton Curry', 'Fish Fry'],
+                    salad: ['Garden Salad', 'Greek Salad', 'Mixed Veg', 'Beet Salad', 'Cabbage Mix'],
+                    accompaniments: ['Premium Raita', 'Pickle', 'Mint Chutney', 'Premium Papad', 'Butter'],
+                    beverages: ['Mineral Water', 'Premium Juice', 'Coffee', 'Tea', 'Wine']
+                }
+            }
+        };
+
+        let packageData = JSON.parse(JSON.stringify(defaultPackages));
+        let packageSelect, eventStartDate, dayCount;
+
+        function login() {
+            const userType = document.getElementById('userType').value;
+            const userId = document.getElementById('userId').value;
+            const password = document.getElementById('password').value;
+            if (userId && password) {
+                document.getElementById('loginPanel').style.display = 'none';
+                if (userType === 'admin') {
+                    document.getElementById('adminSection').style.display = 'block';
+                    loadAllOrdersForSummary();
+                } else {
+                    document.getElementById('menuSection').style.display = 'block';
+                    initPage();
+                }
+            } else {
+                alert('Please enter ID and password');
+            }
+        }
+
+        function initPage() {
+            packageSelect = document.getElementById('packageSelect');
+            eventStartDate = document.getElementById('eventStartDate');
+            dayCount = document.getElementById('dayCount');
+
+            packageSelect.addEventListener('change', renderMenuDetails);
+            eventStartDate.addEventListener('change', renderMenuDetails);
+            dayCount.addEventListener('change', renderMenuDetails);
+
+            renderMenuDetails();
+        }
+
+        function renderMenuDetails() {
+            const selectedKey = packageSelect.value;
+            const pack = packageData[selectedKey];
+            const selectedDayCount = parseInt(dayCount.value, 10) || 1;
+            const startDateValue = eventStartDate.value || new Date().toISOString().slice(0, 10);
+            const dates = buildEventDates(startDateValue, selectedDayCount);
+
+            let html = `<h3>${pack.title} (₹${pack.price})</h3>`;
+
+            dates.forEach((date, dayIndex) => {
+                html += `<div class="day-section">`;
+                html += `<div class="day-title">Day ${dayIndex + 1} — ${date}</div>`;
+                html += renderMealSection('Breakfast', pack.breakfast, dayIndex);
+                html += renderMealSection('Lunch', pack.lunch, dayIndex);
+                html += renderMealSection('Dinner', pack.dinner, dayIndex);
+                html += `</div>`;
+            });
+
+            document.getElementById('menuDetails').innerHTML = html;
+            updateMenuSummary();
+        }
+
+        function renderMealSection(mealName, mealCategories, dayIndex) {
+            const mealLower = mealName.toLowerCase();
+            const radioName = `${mealLower}-day${dayIndex}`;
+
+            let html = `<div class="meal-section">
+                <div class="meal-header">${mealName}</div>
+                <div class="meal-toggle">
+                    <label><input type="radio" name="${radioName}" value="select" checked> Select Items</label>
+                    <label><input type="radio" name="${radioName}" value="na"> Not Applicable</label>
+                </div>
+                <div class="category-grid" id="categories-${radioName}">`;
+
+            Object.entries(mealCategories).forEach(([catName, items]) => {
+                const catId = `${mealLower}-${catName}-day${dayIndex}`;
+                html += `<div class="category-card">
+                    <div class="category-name">${catName}</div>
+                    <div class="category-subtitle">Select up to 3</div>
+                    <div class="item-list">`;
+                
+                items.forEach(item => {
+                    html += `<div class="item-check">
+                        <input type="checkbox" value="${item}" data-meal="${mealLower}" data-cat="${catName}" data-day="${dayIndex}" class="chk">
+                        <label>${item}</label>
+                    </div>`;
+                });
+                
+                html += `</div>
+                    <div class="selection-counter" id="counter-${catId}">Selected: 0/3</div>
+                    <div class="error-msg" id="error-${catId}"></div>
+                </div>`;
+            });
+
+            html += `</div></div>`;
+            return html;
+        }
+
+        function buildEventDates(startDate, days) {
+            const base = new Date(startDate);
+            const dates = [];
+            for (let i = 0; i < days; i++) {
+                const day = new Date(base);
+                day.setDate(base.getDate() + i);
+                dates.push(day.toISOString().slice(0, 10));
+            }
+            return dates;
+        }
+
+        document.addEventListener('change', function(e) {
+            if (e.target.classList.contains('chk')) {
+                const meal = e.target.dataset.meal;
+                const cat = e.target.dataset.cat;
+                const day = e.target.dataset.day;
+                const catId = `${meal}-${cat}-day${day}`;
+
+                const count = document.querySelectorAll(`input[data-meal="${meal}"][data-cat="${cat}"][data-day="${day}"]:checked`).length;
+                const counter = document.getElementById(`counter-${catId}`);
+                const errorDiv = document.getElementById(`error-${catId}`);
+
+                if (count > 3) {
+                    e.target.checked = false;
+                    errorDiv.textContent = '❌ Maximum 3 items!';
+                    errorDiv.style.display = 'block';
+                    setTimeout(() => errorDiv.style.display = 'none', 2000);
+                } else {
+                    errorDiv.style.display = 'none';
+                    counter.textContent = `Selected: ${count}/3`;
+                }
+
+                updateMenuSummary();
+            }
+        });
+
+        function updateMenuSummary() {
+            const selectedKey = packageSelect.value;
+            const pack = packageData[selectedKey];
+            const selectedDayCount = parseInt(dayCount.value, 10) || 1;
+            const startDateValue = eventStartDate.value || new Date().toISOString().slice(0, 10);
+            const dates = buildEventDates(startDateValue, selectedDayCount);
+
+            const checkedItems = document.querySelectorAll('input[type="checkbox"]:checked');
+            const byDay = {};
+
+            dates.forEach((_, i) => {
+                byDay[i] = { breakfast: [], lunch: [], dinner: [] };
+            });
+
+            checkedItems.forEach(cb => {
+                const day = parseInt(cb.dataset.day);
+                const meal = cb.dataset.meal;
+                const value = cb.value;
+                const cat = cb.dataset.cat;
+                byDay[day][meal].push(`${value} (${cat})`);
+            });
+
+            let html = `<h3>Selection Summary</h3><p><strong>Package:</strong> ${pack.title} | <strong>Days:</strong> ${dates.length}</p>`;
+            html += `<table><thead><tr><th>Meal</th>${dates.map(d => `<th>${d}</th>`).join('')}</tr></thead><tbody>`;
+
+            ['Breakfast', 'Lunch', 'Dinner'].forEach(meal => {
+                html += `<tr><th>${meal}</th>`;
+                dates.forEach((_, i) => {
+                    const items = byDay[i][meal.toLowerCase()] || [];
+                    html += `<td>${items.length ? items.map(x => `✓ ${x}`).join('<br>') : '-'}</td>`;
+                });
+                html += `</tr>`;
+            });
+
+            html += `</tbody></table>`;
+            document.getElementById('menuSummary').innerHTML = html;
+        }
+
+        function saveSelection() {
+            const checkedItems = document.querySelectorAll('input[type="checkbox"]:checked');
+            const items = Array.from(checkedItems).map(cb => `${cb.value} (${cb.dataset.cat})`);
+            
+            const order = {
+                userType: 'user',
+                userId: document.getElementById('userId').value,
+                packageTitle: packageData[packageSelect.value].title,
+                packagePrice: packageData[packageSelect.value].price,
+                eventStartDate: eventStartDate.value,
+                eventDates: buildEventDates(eventStartDate.value, parseInt(dayCount.value) || 1),
+                selectedItems: items,
+                timestamp: new Date().toISOString()
+            };
+
+            const saved = JSON.parse(localStorage.getItem('cateringSelections') || '[]');
+            saved.push(order);
+            localStorage.setItem('cateringSelections', JSON.stringify(saved));
+            alert('✅ Order Saved!');
+        }
+
+        function generateBarcode() {
+            const items = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value).slice(0, 5).join(',');
+            const text = `${packageData[packageSelect.value].title}|${eventStartDate.value}|${items}`;
+            document.getElementById('menuDetails').innerHTML += '<svg id="barcode" style="margin-top:20px;"></svg>';
+            JsBarcode('#barcode', text, { format: 'CODE128', width: 2, height: 80, displayValue: true });
+        }
+
+        function printMenu() {
+            window.print();
+        }
+
+        function loadAllOrdersForSummary() {
+            const saved = JSON.parse(localStorage.getItem('cateringSelections') || '[]');
+            updateOrderSummary(saved);
+        }
+
+        function loadData() {
+            const month = document.getElementById('monthSelect').value;
+            if (!month) {
+                alert('Select a month!');
+                return;
+            }
+            const saved = JSON.parse(localStorage.getItem('cateringSelections') || '[]');
+            const filtered = saved.filter(item => item.eventDates && item.eventDates[0].startsWith(month));
+            displayOrders(filtered, `Orders for ${month}`);
+        }
+
+        function loadDataByDate() {
+            const date = document.getElementById('orderDateSelect').value;
+            if (!date) {
+                alert('Select a date!');
+                return;
+            }
+            const saved = JSON.parse(localStorage.getItem('cateringSelections') || '[]');
+            const filtered = saved.filter(item => item.eventDates && item.eventDates.includes(date));
+            displayOrders(filtered, `Orders for ${date}`);
+        }
+
+        function displayOrders(orders, title) {
+            updateOrderSummary(orders);
+            let html = `<h3>${title}</h3>`;
+            if (!orders.length) {
+                html += '<p>No orders found.</p>';
+            } else {
+                orders.forEach((order, i) => {
+                    html += `<div class="order-card">
+                        <p><strong>Order #${i + 1}</strong></p>
+                        <p><strong>User:</strong> ${order.userId}</p>
+                        <p><strong>Package:</strong> ${order.packageTitle} (₹${order.packagePrice})</p>
+                        <p><strong>Dates:</strong> ${order.eventDates.join(', ')}</p>
+                        <p><strong>Items:</strong><br>${order.selectedItems.map(x => `• ${x}`).join('<br>')}</p>
+                    </div>`;
+                });
+            }
+            document.getElementById('dataDisplay').innerHTML = html;
+        }
+
+        function updateOrderSummary(orders) {
+            if (!orders.length) {
+                document.getElementById('orderSummary').innerHTML = '<div style="text-align:center;color:#999;padding:20px;">No orders</div>';
+                return;
+            }
+            const total = orders.length;
+            const revenue = orders.reduce((sum, o) => sum + parseInt(o.packagePrice), 0);
+            document.getElementById('orderSummary').innerHTML = `
+                <div class="summary-stat"><div style="font-size:2rem;">📦</div><div>${total}</div><div>Orders</div></div>
+                <div class="summary-stat"><div style="font-size:2rem;">💰</div><div>₹${revenue}</div><div>Revenue</div></div>
+            `;
+        }
+
+        function printOrders() {
+            window.print();
+        }
+    </script>
+</body>
+</html>
